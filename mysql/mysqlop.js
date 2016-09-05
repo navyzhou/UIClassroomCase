@@ -18,7 +18,7 @@ function insertData(){
         sqlStr+="insert into stuInfo values(0,'花花_" + i + "',1002,'男'," + (20+i) + ",'aaa','1509609888" + i + "');";
     }
     console.info(sqlStr);
-    connection.query(sqlStr,function(err,result){
+    connection.query(sqlStr,function(err){
        if(err){
            console.info("学生信息添加失败..");
            connection.end();
@@ -29,7 +29,7 @@ function insertData(){
 }
 
 function updateData(){
-    connection.query("update stuInfo set sname=? where sid=?",['盼盼',10003],function(err,result){
+    connection.query("update stuInfo set sname=? where sid=?",['盼盼',10003],function(err){
         if(err){
             console.info("学生信息更新失败..");
             connection.end();
@@ -40,7 +40,7 @@ function updateData(){
 }
 
 function delData(){
-    connection.query("delete from stuInfo where sid>=?",[10005],function(err,result){
+    connection.query("delete from stuInfo where sid>=?",[10005],function(err){
         if(err){
             console.info("学生信息删除失败..");
             connection.end();
