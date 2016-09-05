@@ -21,11 +21,11 @@ function getConnect(){
 
     connection.connect(function(err){
         console.info(err);
-       if(err){
-           console.info("数据库连接失败..");
-       } else {
-           console.info("数据库连接成功...");
-       }
+        if(err){
+             console.info("数据库连接失败..");
+        } else {
+            console.info("数据库连接成功...");
+        }
     });
 }
 
