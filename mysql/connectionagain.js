@@ -28,5 +28,4 @@ connection.on("error",function(err){
        throw err; //抛出错误
    }
 });
-
 getConnect();
