@@ -11,16 +11,7 @@ var connection=mysql.createConnection({
 });
 
 function getConnect(){
-    connection=mysql.createConnection({
-        host:"127.0.0.1",
-        port:3306,
-        database:"stusys",
-        user:"root",
-        password:"a"
-    });
-
     connection.connect(function(err){
-        console.info(err);
         if(err){
              console.info("数据库连接失败..");
         } else {
