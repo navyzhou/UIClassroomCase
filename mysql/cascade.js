@@ -22,6 +22,7 @@ connection.connect(function(err){
                 console.info("查询学生信息失败..."+err);
             }else{
                 console.info(result);
+                console.info(result[0].s_sname);
             }
             connection.end();
         });
