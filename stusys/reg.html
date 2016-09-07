@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>学生注册</title>
+    <script src="jquery-1.12.4.js"></script>
+    <script>
+        $(function(){
+            $.get("/getAllClassInfo",null,function(data){
+                if(data.code){
+
+                }else{
+                    var str;
+                    $.each(data,function(index,item){
+                        str="<option value='"+item.cid+"'>"+item.cname+"</option>"
+                        $("#classInfo").append($(str));
+                    });
+                }
+            },"json");
+        })
+    </script>
+</head>
+<style>
+    body,*{
+        margin:0px auto;
+        padding:0px;
+        font-family:"微软雅黑";
+    }
+
+    fieldset{
+        width:50%;
+    }
+
+    label{
+        display:inline-block;
+        width:200px;
+        text-align: right;
+    }
+
+    ul{
+        list-style-type: none;
+    }
+
+    li{
+        line-height:30px;
+    }
+
+</style>
+<body>
+    <fieldset>
+        <legend>学生注册</legend>
+        <form action="/adduser" method="post">
+            <ul>
+                <li><label>班级：</label>
+                <select name="cid" id="classInfo">
+
+
+                </select>
+                <li><label for="sname">学生姓名：</label>
+                <input type="text" name="sname" id="sname"/></li>
+                <li><label for="pwd">密码：</label>
+                <input type="password" name="pwd" id="pwd"/></li>
+                <li><label>性别：</label>
+                <input type="radio" name="sex" value="男"/>男
+                <input type="radio" name="sex" value="女" checked/>女</li>
+                <li><label for="age">年龄：</label>
+                <input type="number" name="age" id="age"/></li>
+                <li> <label for="tel">联系方式：</label>
+                <input type="text" name="tel" id="tel"/></li>
+                <li><input type="submit" value="注册"/></li>
+            </ul>
+        </form>
+    </fieldset>
+</body>
+</html>
