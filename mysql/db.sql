@@ -2,7 +2,7 @@
 create database stusys character set utf8;
 
 --切换数据库到 stusys
-use stusys
+use stusys;
 
 --创建班级信息表
 create table classInfo(
