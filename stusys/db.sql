@@ -1,3 +1,33 @@
+create database stusys character set utf8;
+
+use stusys;
+
+create table classInfo(
+    cid int primary key auto_increment,
+    cname varchar(100) not null unique,
+    status int
+);
+
+alter table classInfo auto_increment=1001;
+
+create table stuInfo(
+    sid int primary key auto_increment,
+    sname varchar(100) not null,
+    cid int,
+    sex varchar(4),
+    age int,
+    pwd varchar(100),
+    tel varchar(15)
+);
+
+alter table stuInfo auto_increment=10001;
+
+insert into classInfo values(0,'YC24',1);
+insert into classInfo values(0,'YC23',1);
+insert into classInfo values(0,'YC25',1);
+
+insert into stuInfo values(0,'天天',1001,'男',20,'aaa','15096098888');
+
 --创建数据库 stusys
 create database stusys character set utf8;
 
