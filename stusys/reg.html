@@ -6,9 +6,13 @@
     <script src="jquery-1.12.4.js"></script>
     <script>
         $(function(){
+            //当页面加载完成后，向服务器发送一个请求获取所有班级信息
             $.get("/getAllClassInfo",null,function(data){
                 if(data.code){
-
+                    switch(data.code){
+                        case "0":alert("数据库连接失败...");break;
+                        case "1":alert("数据查询失败...");break;
+                    }
                 }else{
                     var str;
                     $.each(data,function(index,item){
@@ -67,7 +71,7 @@
                 <input type="number" name="age" id="age"/></li>
                 <li> <label for="tel">联系方式：</label>
                 <input type="text" name="tel" id="tel"/></li>
-                <li><input type="submit" value="注册"/></li>
+                <li><center><input type="submit" value="注册"/></center></li>
             </ul>
         </form>
     </fieldset>
