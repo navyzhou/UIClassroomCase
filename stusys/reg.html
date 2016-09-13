@@ -22,6 +22,28 @@
                 }
             },"json");
         })
+
+        function checkInfo(){
+            var cid= $.trim( $("#classInfo").val() );
+            var sname= $.trim( $("#sname").val() );
+            var pwd= $.trim( $("#pwd").val() );
+            var sex= $.trim( $("input:radio[name=sex]:checked").val() );
+            var age= $.trim( $("#age").val() );
+            var tel= $.trim( $("#tel").val() );
+
+            $.post("/adduser",{cid:cid,sname:sname,pwd:pwd,sex:sex,age:age,tel:tel},function(data){
+                data=$.trim(data);
+                if(data=="0"){
+                    alert("获取数据库连接失败，请检查数据库连接...");
+                }else if(data=="1"){
+                    alert("注册学生信息失败...");
+                }else if(data=="2"){
+                    alert("请选择学生性别...");
+                }else{
+                    alert("注册学生信息成功，学号为："+data);
+                }
+            });
+        }
     </script>
 </head>
 <style>
@@ -71,7 +93,7 @@
                 <input type="number" name="age" id="age"/></li>
                 <li> <label for="tel">联系方式：</label>
                 <input type="text" name="tel" id="tel"/></li>
-                <li><center><input type="submit" value="注册"/></center></li>
+                <li><center><input type="button" value="注册" onclick="checkInfo()"/></center></li>
             </ul>
         </form>
     </fieldset>

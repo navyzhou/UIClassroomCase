@@ -22,8 +22,8 @@ create table stuInfo(
 
 alter table stuInfo auto_increment=10001;
 
-insert into classInfo values(0,'YC24',1);
 insert into classInfo values(0,'YC23',1);
+insert into classInfo values(0,'YC24',1);
 insert into classInfo values(0,'YC25',1);
 
 insert into stuInfo values(0,'天天',1001,'男',20,'aaa','15096098888');

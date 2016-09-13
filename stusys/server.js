@@ -7,7 +7,7 @@ var querystring=require("querystring");
 var fs=require("fs");
 var url=require("url");
 
-var server=http.createServer().listen(6666,function(){
+var server=http.createServer().listen(5858,function(){
     console.info("服务器已经启动...");
 });
 
@@ -53,25 +53,66 @@ server.on("request",function(req,res){
             //获取学生的注册信息
             req.on("data",function(data){
                 var dataInfo=querystring.parse(data.toString());
-                dataInfo["sid"]=0;
 
-                //将用户提交的注册信息存入数据库
-                pool.getConnection(function(err,connection){
-                    if(err){ //如果获取连接失败，则返回一个0
-                        res.write("0");
-                        res.end();
-                    }else{
-                        console.info(dataInfo);
-                        connection.query("insert into stuInfo set ?",dataInfo,function(err,result){
-                            if(err){
-                                res.write("1"); //数据添加失败
-                            }else{
-                                res.write(result.insertId+"");
-                            }
+                if(dataInfo.sex==""){
+                    res.write("2"); //说明性别为空
+                    res.end();
+                }else {
+                    dataInfo["sid"] = 0;
+
+                    //将用户提交的注册信息存入数据库
+                    pool.getConnection(function (err, connection) {
+                        if (err) { //如果获取连接失败，则返回一个0
+                            res.write("0");
                             res.end();
-                        });
-                    }
-                });
+                        } else {
+                            console.info(dataInfo);
+                            connection.query("insert into stuInfo set ?", dataInfo, function (err, result) {
+                                if (err) {
+                                    res.write("1"); //数据添加失败
+                                } else {
+                                    res.write(result.insertId + "");
+                                }
+                                connection.release();
+                                res.end();
+                            });
+                        }
+                    });
+                }
+            });
+        }else if(path=="/userLogin"){ //说明是学生登录
+            //那么肯定有学号和密码传过来，所以我们必须监听它传过来的数据
+            req.on("data",function(data){
+                var dataInfo=querystring.parse(data.toString());
+
+                if(dataInfo.sid==""){ //说明学号为空
+                    res.write("1");
+                    res.end();
+                }else if(dataInfo.pwd==""){ //说明密码为空
+                    res.write("2");
+                    res.end();
+                }else{ //说明学生输入了学号和密码，则我们需要从数据库里面查询有没有这样的学生，根据给定的学号和密码
+                    pool.getConnection(function(err,connection){
+                        if(err){
+                            res.write("3"); //获取数据了连接失败
+                            res.end();
+                        }else{
+                            connection.query("select * from stuInfo where sid=? and pwd=?",[dataInfo.sid,dataInfo.pwd],function(err,result){
+                                if(err){
+                                    res.write("4"); //说明查询数据失败
+                                }else{
+                                   if(result.length==0){ //说明学号或密码错误
+                                       res.write("0");
+                                   }else { //登录成功...
+                                       res.write("5");
+                                   }
+                                }
+                                connection.release();
+                                res.end();
+                            })
+                        }
+                    });
+                }
             });
         }else{
             readFile("."+path,res);
