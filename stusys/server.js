@@ -7,7 +7,7 @@ var querystring=require("querystring");
 var fs=require("fs");
 var url=require("url");
 
-var server=http.createServer().listen(5858,function(){
+var server=http.createServer().listen(6868,function(){
     console.info("服务器已经启动...");
 });
 
@@ -114,6 +114,25 @@ server.on("request",function(req,res){
                     });
                 }
             });
+        }else if(path=="/findAllStuInfo"){ //查询所有班级信息
+            pool.getConnection(function(err,connection){
+                if(err){
+                    res.writeHeader(500,"ERROR",{"Content-Type":"text/json"});
+                    res.write('{"code":"0"}');
+                    res.end();
+                }else{ //则查询
+                    connection.query("select s.*,cname from stuInfo s inner join classInfo c on s.cid=c.cid",function(err,result){
+                        if(err){
+                            res.writeHeader(500,"ERROR",{"Content-Type":"text/json"});
+                            res.write('{"code":"1"}');
+                        } else  {
+                            res.writeHeader(200,"OK",{"Content-Type":"text/json"});
+                            res.write(JSON.stringify(result));
+                        }
+                        res.end();
+                    });
+                }
+            });
         }else{
             readFile("."+path,res);
         }
@@ -140,7 +159,7 @@ function readFile(path,res){
             res.write("<h1>404页面未找到...</h1>");
             res.end();
         }
-    })
+    });
     //如果是fileRead读文件的话，必须判断要读取的文件类型
     //fs.readFile(path,"binary",function(err,data){});
     //fs.readFile(path,"utf8",function(err,data){});
