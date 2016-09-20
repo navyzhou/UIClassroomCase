@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>学生信息</title>
+    <script src="jquery-1.12.4.js"></script>
+    <script>
+        $(function(){
+            $.get("/findAllStuInfo",null,function(data){
+                //console.info(data);
+                if(data.code){
+                    switch(data.code){
+                        case "0":alert("数据库连接失败...");break;
+                        case "1":alert("数据查询失败...");break;
+                    }
+                }else{
+                    var str;
+                    $.each(data,function(index,item){
+                        str="<tr align='center'><td>"+item.sid+"</td><td>"+item.sname+"</td><td>"+item.sex;
+                        str+="</td><td>"+item.age+"</td><td>"+item.tel+"</td><td>"+item.cname+"</td></tr>";
+                        $("#stuInfo").append($(str));
+                    });
+                }
+            },"json");
+        });
+    </script>
+</head>
+<body>
+    <table align="center" border="1px" width="80%" cellpadding="0px" cellspacing="0px">
+        <thead>
+            <tr>
+                <th>学号</th>
+                <th>姓名</th>
+                <th>性别</th>
+                <th>年龄</th>
+                <th>联系方式</th>
+                <th>班级</th>
+            </tr>
+        </thead>
+        <tbody id="stuInfo">
+
+        </tbody>
+    </table>
+</body>
+</html>

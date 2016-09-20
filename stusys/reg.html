@@ -16,12 +16,12 @@
                 }else{
                     var str;
                     $.each(data,function(index,item){
-                        str="<option value='"+item.cid+"'>"+item.cname+"</option>"
+                        str="<option value='"+item.cid+"'>"+item.cname+"</option>";
                         $("#classInfo").append($(str));
                     });
                 }
             },"json");
-        })
+        });
 
         function checkInfo(){
             var cid= $.trim( $("#classInfo").val() );
@@ -76,7 +76,7 @@
 <body>
     <fieldset>
         <legend>学生注册</legend>
-        <form action="/adduser" method="post">
+        <form action="adduser" method="post">
             <ul>
                 <li><label>班级：</label>
                 <select name="cid" id="classInfo">
