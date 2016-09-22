@@ -1,0 +1,20 @@
+body{
+    padding:0px;
+    margin:0px auto;
+    font-family:"微软雅黑";
+    font-size:12px;
+}
+
+*{
+    padding:0px;
+    margin:0px auto;
+}
+
+a{
+    text-decoration:none;
+    color:cornflowerblue;
+}
+
+a:hover{
+    color:red;
+}
