@@ -10,16 +10,14 @@ app.use(express.static(__dirname));
 app.use(bodyparser.urlencoded({extended:false}));
 
 app.use(session({
-    secret: 'keyboard cat',
-    resave: false,
-    saveUninitialized: true,
-    cookie: { secure: false }
-}))
+    secret: 'keyboard cat', //私密  session id的标识
+    resave:true,//每次请求是否重新设置session cookie
+    saveUninitialized: true, //设置session cookie,默认值为connect.sid
+    cookie: { secure: false,maxAge:1000*60 } //secure 用于https
+}));
 
 app.post("/userLogin",function(req,res){
     req.session.uname=req.body.uname;
-    console.info(req.session);
-    console.info(req.session.uname);
     res.send("1");
 });
 
