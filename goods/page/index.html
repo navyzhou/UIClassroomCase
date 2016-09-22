@@ -90,6 +90,16 @@
         </ul>
     </article>
 
+    <div style="position: fixed;right:0px;top:50%;">
+        <span style="display:inline-block;width:12px;word-wrap: break-word;float: left">在线客服</span>
+        <ul style="float: left;margin:0px 10px">
+            <li>fdjfdsf</li>
+            <li>fdjfdsf</li>
+            <li>fdjfdsf</li>
+            <li>fdjfdsf</li>
+        </ul>
+    </div>
+
     <footer>
 
 
@@ -113,13 +123,13 @@
                     <div style="height:17px; overflow:hidden"></div>
                     <dd>
                         <span class="titles">用户名：</span>
-                        <input type="text" name="uname"	id="uname" onblur="checkloginuname()" /><span id="unamep">请输入昵称或邮箱</span>
+                        <input type="text" name="uname"	id="uname" /><span id="unamep">请输入昵称或邮箱</span>
                     </dd>
                     <br />
                     <div style="height:17px; overflow:hidden"></div>
                     <dd>
                         <span class="titles">密&nbsp;&nbsp;&nbsp;&nbsp;码：</span>
-                        <input type="password" name="pwd" id="pwd" onblur="checkloginpwd()" /><span id="pwdp">请输入您的密码</span>
+                        <input type="password" name="pwd" id="pwd"/><span id="pwdp">请输入您的密码</span>
                     </dd>
                 </dl>
                 <div style="margin-left:70px; margin-bottom:10px;">
@@ -148,19 +158,20 @@
                 <dl>
                     <div style="height:17px; overflow:hidden"></div>
                     <label class="labelInfo" for="uname">用户名称：</label>
-                    <input type="text" name="uname" id="zcuname" onblur="checkzcuname()" />
+                    <input type="text" name="uname" id="zcuname"/>
                     <p id="zcunamep">请输入您的昵称或注册邮箱(至少6位)</p>
                     <label class="labelInfo" for="pwd">输入密码：</label>
-                    <input type="password" name="pwd" id="zcpwd" onblur="checkzcpwd()" />
+                    <input type="password" name="pwd" id="zcpwd"/>
                     <p id="zcpwdp">请输入您的登录密码(至少6位)</p>
                     <label class="labelInfo" for="pwdagain">重复密码：</label>
-                    <input type="password" name="pwdagain" id="zcpwdagain" onblur="checkzcpwdagain()" />
+                    <input type="password" name="pwdagain" id="zcpwdagain"/>
                     <p id="zcpwdtwop">请重复输入您的登录密码(至少6位)</p>
                 </dl>
                 <div style="margin-left:30px;">
                     <img alt="注册" src="images/zcss.png" onClick="userzc()" style="float:left"/>
                     <span style="margin-left:20px;float:left;margin-top:15px;">如果已经有账号 <a href="javascript:showLogin()">马上登录</a></span>
                 </div>
+                <p id="registertishi" style="color:red;clear: both"></p>
             </form>
         </div>
     </div>
