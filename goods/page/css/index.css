@@ -9,3 +9,40 @@ header{
     height: 30px;
     line-height: 30px;
 }
+
+article{
+    margin-top: 50px;
+    width: 1400px;
+    height:2000px;
+    display: block;
+}
+
+article ul{
+    width:100%;
+}
+
+article>ul>li{
+    float:left;
+    width:156px;
+    text-align: center;
+    background:#FFFFFF;
+    margin:20px 14px;
+    padding:20px 4px;
+    border:2px solid snow;
+    border-radius:6px;
+}
+
+article>ul>li dd{
+    line-height: 24px;
+}
+
+.goods_price{
+    color:red !important;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+article>ul>li>dl>dt>img{
+    width:100px;
+    height:120px;
+}
