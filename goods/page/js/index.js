@@ -3,7 +3,7 @@ $(function(){
        $(this).css("border-color","#c1e2be");
    });
 
-    userIsLogin();
+    userIsLogin(); //发送请求判断用户是否已经登录
 });
 
 //打开登录窗口

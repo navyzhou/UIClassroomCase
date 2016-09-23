@@ -8,9 +8,6 @@ var multer=require("multer"); //处理文件上传的
 
 var app=express(); //创建一个应用程序
 
-//使用静态中间件
-app.use(express.static("page")); //默认到page文件夹下查找静态资源
-
 //配置和使用body-parser中间件
 app.use(bodyparser.urlencoded({extended:false}));
 
@@ -34,8 +31,16 @@ var pool =mysql.createPool({
     password:"a"
 });
 
-//处理用户注册的方法
-app.post("/userRegister",function(req,res){
+//监听所有类型的请求，注意此时要将静态中间件放到这个的后面，否则当我们访问静态资源时，不会被这个监听拦截
+app.all("/back/*",function(req,res,next){//back/goods.html
+    if(req.session.currentLoginUser==undefined){
+        res.send("<script>alert('请先登录...');location.href='/index.html';</script>");
+    }else{ //说明已经登录
+        next(); //将请求往下传递给对应的处理方法
+    }
+});
+
+app.post("/userRegister",function(req,res){//处理用户注册的方法
     var result="0";
     if(req.body.uname==""){
         res.send("1"); //说明用户名为空
@@ -49,12 +54,13 @@ app.post("/userRegister",function(req,res){
                res.send("4"); //说明数据库连接失败
            } else {
                connection.query("insert into adminInfo values(0,?,?)",[req.body.uname,req.body.pwd],function(err,result){
+                   connection.release(); //释放连接给连接池
                    if(err){
                        res.send("5"); //说明添加数据失败
                    }else{
                        res.send("6"); //注册成功
                    }
-               })
+               });
            }
         });
     }
@@ -71,7 +77,8 @@ app.post("/userLogin",function(req,res){ //处理用户登录的请求
                res.send("3");
            } else{
                conn.query("select aid,aname,pwd from adminInfo where aname=? and pwd=?",[req.body.uname,req.body.pwd],function(err,result){
-                  if(err){
+                   conn.release(); //释放连接给连接池
+                   if(err){
                       res.send("4");
                   } else{
                       if(result.length>0){ //说明用户登录成功，则需要将当前用户信息存到session中
@@ -98,6 +105,7 @@ app.get("/checkUserName",function(req,res){ //检验用户名是否可用
             }else{
                 //参数占位符用一个？ 非参数占位符用两个 ??
                 conn.query("select * from ?? where ??=?",[req.query.tabName,req.query.colName,req.query.uname],function(err,result){
+                    conn.release(); //释放连接给连接池
                     if(err){
                         res.send("1");
                     }else{
@@ -120,6 +128,27 @@ app.get("/userIsLogin",function(req,res){ //处理用户是否已经登录的请
        res.send(req.session.currentLoginUser.aname);
    }
 });
+
+app.get("/getAllTypes",function(req,res){ //处理获取所有商品类型的请求
+    pool.getConnection(function(err,conn){
+        res.header("Content-Type","application/json");
+        if(err){
+            res.send('{"err":"0"}');
+        }else{
+            conn.query("select tid,tname,status from goodstype",function(err,result){
+                conn.release();
+                if(err){
+                    res.send('{"err":"0"}');
+                } else{
+                    res.send(result);
+                }
+            });
+        }
+    });
+});
+
+//使用静态中间件
+app.use(express.static("page")); //默认到page文件夹下查找静态资源
 
 app.listen(80,function(err){
     if(err){
