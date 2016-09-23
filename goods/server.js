@@ -60,6 +60,59 @@ app.post("/userRegister",function(req,res){
     }
 });
 
+app.post("/userLogin",function(req,res){ //处理用户登录的请求
+    if(req.body.uname==""){
+        res.send("1");
+    }else if(req.body.pwd==""){
+        res.send("2");
+    }else{
+        pool.getConnection(function(err,conn){
+           if(err){
+               res.send("3");
+           } else{
+               conn.query("select aid,aname,pwd from adminInfo where aname=? and pwd=?",[req.body.uname,req.body.pwd],function(err,result){
+                  if(err){
+                      res.send("4");
+                  } else{
+                      if(result.length>0){ //说明用户登录成功，则需要将当前用户信息存到session中
+                          req.session.currentLoginUser=result[0];
+                          res.send("6");
+                      }else{
+                          res.send("5");
+                      }
+                  }
+               });
+           }
+        });
+    }
+});
+
+app.get("/checkUserName",function(req,res){ //检验用户名是否可用
+    //console.info( req.body.uname );
+    if( req.query.uname=="" ){
+        res.send("1");
+    }else(
+         pool.getConnection(function(err,conn){
+            if(err){
+                res.send("1");
+            }else{
+                //参数占位符用一个？ 非参数占位符用两个 ??
+                conn.query("select * from ?? where ??=?",[req.query.tabName,req.query.colName,req.query.uname],function(err,result){
+                    if(err){
+                        res.send("1");
+                    }else{
+                        if(result.length>0) { //说明找到了数据
+                            res.send("1");
+                        }else{
+                            res.send("0");
+                        }
+                    }
+                })
+            }
+         })
+    )
+});
+
 app.listen(80,function(err){
     if(err){
         console.info(err);
