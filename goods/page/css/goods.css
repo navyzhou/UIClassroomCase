@@ -1,0 +1,10 @@
+fieldset{
+    position: relative;
+}
+
+#showpic{
+    top:0px;
+    right:10px;
+    position:absolute;
+    width:60%;
+}

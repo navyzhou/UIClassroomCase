@@ -113,6 +113,14 @@ app.get("/checkUserName",function(req,res){ //检验用户名是否可用
     )
 });
 
+app.get("/userIsLogin",function(req,res){ //处理用户是否已经登录的请求
+   if(req.session.currentLoginUser==undefined){
+       res.send("0");
+   } else{
+       res.send(req.session.currentLoginUser.aname);
+   }
+});
+
 app.listen(80,function(err){
     if(err){
         console.info(err);

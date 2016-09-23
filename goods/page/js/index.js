@@ -2,6 +2,8 @@ $(function(){
    $("#loginpages input").focus(function(){
        $(this).css("border-color","#c1e2be");
    });
+
+    userIsLogin();
 });
 
 //打开登录窗口
@@ -109,5 +111,16 @@ function checkInfos(obj,tabName,colName){ //信息检验
     }
 }
 
-
+function userIsLogin(){ //判断用户是否已经登录
+    $.get("userIsLogin",null,function(data){
+        data= $.trim(data);
+        var str;
+        if(data!="0"){
+            str='尊敬的会员：<a href="">['+data+']</a>&nbsp;&nbsp<a href="javascript:userOutLogin()">[注销]</a>&nbsp;<a href="back/goods.html">[后台管理]</a>';
+        }else{
+            str='<a href="javascript:showLogin()">[请先登录]</a>&nbsp;<a href="javascript:showRegister()">[立即注册]</a>';
+        }
+        $("header").html(str);
+    })
+}
 

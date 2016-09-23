@@ -9,8 +9,8 @@ function setImagePreviews(imagesObj,divid) {
         if (imagesObj.files && imagesObj.files[i]) {
             //火狐下，直接设img属性
             imgObjPreview.style.display = 'block';
-            imgObjPreview.style.width = '200px';
-            imgObjPreview.style.height = '200px';
+            imgObjPreview.style.width = '100px';
+            imgObjPreview.style.height = '100px';
             imgObjPreview.src = window.URL.createObjectURL(imagesObj.files[i]);
         }else {
             //IE下，使用滤镜
