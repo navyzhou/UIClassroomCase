@@ -139,7 +139,7 @@ img:hover {
     padding: 0px;
 }
 
-#loginpages #ids {
+#loginpages .ids {
     margin-top: 5px;
     text-align: left;
     padding: 0px;
@@ -147,7 +147,7 @@ img:hover {
     font-size: 20px;
 }
 
-#zcpages #ids {
+#zcpages .ids {
     margin-top: 0px;
     text-align: left;
     padding: 0px;
