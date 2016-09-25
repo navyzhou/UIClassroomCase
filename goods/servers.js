@@ -178,7 +178,6 @@ app.use(express.static("page")); //默认到page文件夹下查找静态资源
 app.listen(80,function(err){
     if(err){
         logger.info(err.message.toString());
-        logger.info(err.message.toString());
         console.info(err);
     }else{
         console.info("应用程序启动成功...");
