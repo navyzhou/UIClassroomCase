@@ -7,7 +7,7 @@ var mailOptions={
     to :"<接收者邮箱1>,<接收者邮箱2>,...", //接收者邮箱
     subject: "邮箱测试", //邮件主题
     text : "您好！",
-    html : "<h1>这是封测试邮件</h1>"
+    html : "<h1>这是封测试邮件...</h1>"
 };
 
 transporter.sendMail(mailOptions, function(error, info){
