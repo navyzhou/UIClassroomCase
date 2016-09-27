@@ -9,6 +9,7 @@
 <script type="text/javascript" src="../js/jquery-1.12.4.js"></script>
 <script type="text/javascript" src="../js/showPic.js"></script>
 <script type="text/javascript" src="../js/goods.js"></script>
+<script type="text/javascript" src="../js/ajaxfileupload.js"></script>
 </head>
 <body>
     <fieldset>
@@ -17,7 +18,7 @@
         <p>商品名称：<input type="text" name="pname" id="pname" /></p>
         <p>商品价格：<input type="number" name="price" id="price" /></p>
         <p>商品图片：<input type="file" name="pic" id="pic" onchange="setImagePreviews(this,'showpic')" multiple/></p>
-        <p><input type="button" value="添加" />
+        <p><input type="button" value="添加" onclick="addGoods()" />
         <div id="showpic">
 
         </div>

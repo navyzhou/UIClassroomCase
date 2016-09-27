@@ -17,28 +17,13 @@ app.use(session({
     secret: 'keyboard cat',
     resave: true,
     saveUninitialized: true,
-    cookie: {secure:false,maxAge:1000*60*2}
+    cookie: {secure:false,maxAge:1000*60*20}
 }));
 
+var fileUploadPath="/page/pic";
+
 //配置文件上传的中间件
-var upload =multer({dest:"./page/pic"}); //上传图片的目录设定
-
-
-log4js.configure({
-    appenders:[
-        {type:'console'}, //控制台输出
-        {
-            type:'file', //文件输出
-            filename:'./logs/goods.log', //文件路径
-            maxLogSize:102400, //超过maxLogSize大小时，会自动生成一个新的文件
-            category:"normal" //日志级别
-        }
-    ]
-});
-var logger=log4js.getLogger('normal');
-logger.setLevel('info');  //trace  debug info  warn  error  fatal
-app.use(log4js.connectLogger(logger,{level:'auto',format:':method :url'}));
-
+var upload =multer({dest:"."+fileUploadPath}); //上传图片的目录设定
 
 //配置数据库连接池
 var pool =mysql.createPool({
@@ -69,13 +54,11 @@ app.post("/userRegister",function(req,res){//处理用户注册的方法
     }else{//访问数据库
         pool.getConnection(function(err,connection){
            if(err){
-               logger.info(err.message.toString());
                res.send("4"); //说明数据库连接失败
            } else {
                connection.query("insert into adminInfo values(0,?,?)",[req.body.uname,req.body.pwd],function(err,result){
                    connection.release(); //释放连接给连接池
                    if(err){
-                       logger.info(err.message.toString());
                        res.send("5"); //说明添加数据失败
                    }else{
                        res.send("6"); //注册成功
@@ -94,13 +77,11 @@ app.post("/userLogin",function(req,res){ //处理用户登录的请求
     }else{
         pool.getConnection(function(err,conn){
             if(err){
-                logger.info(err.message.toString());
                 res.send("3");
             } else{
                 conn.query("select aid,aname,pwd from adminInfo where aname=? and pwd=?",[req.body.uname,req.body.pwd],function(err,result){
                     conn.release(); //释放连接给连接池
                     if(err){
-                        logger.info(err.message.toString());
                         res.send("4");
                     } else{
                         if(result.length>0){ //说明用户登录成功，则需要将当前用户信息存到session中
@@ -156,13 +137,11 @@ app.get("/getAllTypes",function(req,res){ //处理获取所有商品类型的请
     pool.getConnection(function(err,conn){
         res.header("Content-Type","application/json");
         if(err){
-            logger.info(err.message.toString());
             res.send('{"err":"0"}');
         }else{
-            conn.query("select tid,tname,status from goodstype",function(err,result){
+            conn.query("select tid,tname,status from goodstype where status=1",function(err,result){
                 conn.release();
                 if(err){
-                    logger.info(err.message.toString());
                     res.send('{"err":"0"}');
                 } else{
                     res.send(result);
@@ -172,13 +151,89 @@ app.get("/getAllTypes",function(req,res){ //处理获取所有商品类型的请
     });
 });
 
+app.post("/addGoodsType",function(req,res){ //添加商品类型
+   if(req.body.tname==""){
+       res.send("0");
+   } else{
+       pool.getConnection(function(err,conn){
+          if(err){
+              res.send("0");
+          } else{
+              conn.query("insert into goodsType values(0,?,1)",[req.body.tname],function(err,result){
+                  conn.release();
+                  if(err){
+                      res.send("0");
+                  }else{
+                      res.send(result.insertId+"");
+                  }
+              });
+          }
+       });
+   }
+});
+
+app.post("/delGoodsType",function(req,res){ //删除商品类型信息
+    if(req.body.tid==""){
+        res.send("0");
+    } else{
+        pool.getConnection(function(err,conn){
+            if(err){
+                res.send("2");
+            } else{
+                conn.query("update goodsType set status=0 where tid=?",[req.body.tid],function(err,result){
+                    conn.release();
+                    if(err){
+                        res.send("3");
+                    }else{
+                        res.send("1");
+                    }
+                });
+            }
+        });
+    }
+});
+
+app.post("/addGoods",upload.array("pic"),function(req,res){
+    if(req.body.tid=="" || req.body.pname=="" || req.body.price==""){
+        res.send("0");
+    } else{
+        pool.getConnection(function(err,conn){
+            if(err){
+                res.send("2");
+            } else{
+                var fileName="";
+                var filePath="";
+                var file;
+                if(req.files!=undefined){
+                    for(var i in req.files){
+                        file=req.files[i];
+                        fileName=fileUploadPath+"/"+new Date().getTime()+"_"+file.originalname;
+                        fs.renameSync(file.path,__dirname+fileName);
+                        if(filePath!=""){
+                            filePath+=",";
+                        }
+                        filePath+=fileName; //1.jpg,2.jpg
+                    }
+                }
+                conn.query("insert into goodsInfo values(0,?,?,?,?)",[req.body.pname,req.body.price,filePath,req.body.tid],function(err,result){
+                    conn.release();
+                    if(err){
+                        console.info(err);
+                        res.send("3");
+                    }else{
+                        res.send("1");
+                    }
+                });
+            }
+        });
+    }
+});
+
 //使用静态中间件
 app.use(express.static("page")); //默认到page文件夹下查找静态资源
 
 app.listen(80,function(err){
     if(err){
-        logger.info(err.message.toString());
-        logger.info(err.message.toString());
         console.info(err);
     }else{
         console.info("应用程序启动成功...");

@@ -4,12 +4,46 @@
 <meta charset="UTF-8">
 <title>商品类型管理</title>
 <link rel="shortcut icon" href="../images/yc2.png" type="image/x-icon" />
+<script type="text/javascript" src="../js/jquery-1.12.4.js"></script>
+<script type="text/javascript">
+    $(function(){
+        $.get("/getAllTypes",null,function(data){ //获取所有的商品类型
+            $.each(data,function(index,item){
+                $("#goodsTypeInfo").append( $("<tr><td>"+item.tid+"</td><td>"+item.tname+"</td><td><a href='javascript:void(0)' onclick='delGoodsType(this,"+item.tid+")'>[删除]</a></td></tr>") );
+            });
+        },"json");
+    });
+
+    function addGoodsType(){//添加商品类型
+        var tname= $.trim( $("#tname").val() );
+        $.post("/addGoodsType",{tname:tname},function(data){
+            data=$.trim(data);
+            if(data=="0"){
+                alert("商品类型添加失败...");
+            }else{
+                var str="<tr><td>"+data+"</td><td>"+tname+"</td><td><a href='javascript:void(0)' onclick='delGoodsType(this,"+data+")'>[删除]</a></td></tr>";
+                $("#goodsTypeInfo").append( $(str) );
+            }
+        },"text");
+    }
+
+    function delGoodsType(obj,tid){ //删除商品类型信息
+        $.post("/delGoodsType",{tid:tid},function(data){
+            data= $.trim(data);
+            if(data=="1"){
+                $(obj).parent().parent().remove();
+            }else{
+                alert("删除商品类型信息失败...");
+            }
+        });
+    }
+</script>
 </head>
 <body>
     <fieldset>
         <legend>添加商品类型</legend>
-        商品类型名称：<input type="text" name="tname">
-        <input type="button" value="添加">
+        商品类型名称：<input type="text" name="tname" id="tname">
+        <input type="button" value="添加" onclick="addGoodsType()">
     </fieldset>
 
     <fieldset>
@@ -19,9 +53,10 @@
                 <tr>
                     <th>商品类型编号</th>
                     <th>商品类型名称</th>
+                    <th>商品类型操作</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="goodsTypeInfo" align="center">
 
             </tbody>
         </table>
