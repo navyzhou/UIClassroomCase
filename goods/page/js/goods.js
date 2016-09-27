@@ -48,3 +48,28 @@ function addGoods(){ //添加商品信息
     });
 }
 
+function showGoodsInfo(){ //获取所有的商品信息
+    $.get("/getAllGoodsInfo",null,function(data){
+        var str;
+        var pic;
+        var pics;
+        var picStr="";
+        $.each(data,function(index,item){
+            picStr="";
+            pic=item.pic;
+            if(pic.indexOf(",")){ //说明有多张
+                pics=pic.split(",");
+                for(var i=0;i<pics.length;i++){
+                    picStr+="<img src='../.."+pics[i]+"' width='100px' height='100px'/>";
+                }
+            }else if(pic!=""){ //有一张
+                picStr+="<img src='../.."+pic+"' width='100px' height='100px'/>";
+            }else{ //没有图片
+
+            }
+
+            str="<tr><td>"+picStr+"</td><td>"+item.gid+"</td><td>"+item.gname+"</td><td>"+item.price+"</td><td>"+item.tname+"</td></tr>";
+            $("#showGoodsInfo").append($(str));
+        });
+    },"json");
+}

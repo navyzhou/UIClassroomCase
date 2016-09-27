@@ -20,7 +20,8 @@ app.use(session({
     cookie: {secure:false,maxAge:1000*60*20}
 }));
 
-var fileUploadPath="/page/pic";
+var fileUploadPath="/page/pic"; //存入服务器的路径
+var fileUploadPathData="/pic"; //存入数据库中路径，主要要除掉static中的路径
 
 //配置文件上传的中间件
 var upload =multer({dest:"."+fileUploadPath}); //上传图片的目录设定
@@ -193,7 +194,7 @@ app.post("/delGoodsType",function(req,res){ //删除商品类型信息
     }
 });
 
-app.post("/addGoods",upload.array("pic"),function(req,res){
+app.post("/addGoods",upload.array("pic"),function(req,res){//处理获取所有商品信息的请求
     if(req.body.tid=="" || req.body.pname=="" || req.body.price==""){
         res.send("0");
     } else{
@@ -207,12 +208,12 @@ app.post("/addGoods",upload.array("pic"),function(req,res){
                 if(req.files!=undefined){
                     for(var i in req.files){
                         file=req.files[i];
-                        fileName=fileUploadPath+"/"+new Date().getTime()+"_"+file.originalname;
-                        fs.renameSync(file.path,__dirname+fileName);
+                        fileName=new Date().getTime()+"_"+file.originalname;
+                        fs.renameSync(file.path,__dirname+fileUploadPath+"/"+fileName);
                         if(filePath!=""){
                             filePath+=",";
                         }
-                        filePath+=fileName; //1.jpg,2.jpg
+                        filePath+=fileUploadPathData+"/"+fileName; //1.jpg,2.jpg
                     }
                 }
                 conn.query("insert into goodsInfo values(0,?,?,?,?)",[req.body.pname,req.body.price,filePath,req.body.tid],function(err,result){
@@ -227,6 +228,24 @@ app.post("/addGoods",upload.array("pic"),function(req,res){
             }
         });
     }
+});
+
+app.get("/getAllGoodsInfo",function(req,res){ //获取所有商品信息
+    pool.getConnection(function(err,conn){
+        res.header("Content-Type","application/json");
+        if(err){
+            res.send('{"err":"0"}');
+        }else{
+            conn.query("select g.*,tname from goodsInfo g,goodstype t where g.tid=t.tid",function(err,result){
+                conn.release();
+                if(err){
+                    res.send('{"err":"0"}');
+                } else{
+                    res.send(result);
+                }
+            });
+        }
+    });
 });
 
 //使用静态中间件
