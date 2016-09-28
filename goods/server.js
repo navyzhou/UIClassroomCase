@@ -236,12 +236,74 @@ app.get("/getAllGoodsInfo",function(req,res){ //获取所有商品信息
         if(err){
             res.send('{"err":"0"}');
         }else{
+
             conn.query("select g.*,tname from goodsInfo g,goodstype t where g.tid=t.tid",function(err,result){
                 conn.release();
                 if(err){
                     res.send('{"err":"0"}');
                 } else{
                     res.send(result);
+                }
+            });
+        }
+    });
+});
+
+app.post("/getGoodsInfoByPage",function(req,res){ //处理前台的分页查询请求
+    var pageNo=req.body.pageNo;
+    var pageSize=req.body.pageSize;
+    if(pageNo<0){
+        pageNo=1;
+    }
+    if(pageSize<0){
+        pageSize=7;
+    }
+    pool.getConnection(function(err,conn){
+        res.header("Content-Type","application/json");
+        if(err){
+            res.send('{"err":"0"}');
+        }else{ //1-7  0-7 , 2-7 7-7  3-7 14-7  (pageNo-1)*pageSize
+            conn.query("select g.*,tname from goodsInfo g,goodstype t where g.tid=t.tid limit "+(pageNo-1)*pageSize+","+pageSize,function(err,result){
+                if(err){
+                    res.send('{"err":"0"}');
+                } else{
+                    res.send(result);
+                }
+            });
+        }
+    });
+});
+
+app.post("/getGoodsInfoByPageOne",function(req,res){ //处理前台的第一次分页查询请求
+    var pageNo=req.body.pageNo;
+    var pageSize=req.body.pageSize;
+    if(pageNo<0){
+        pageNo=1;
+    }
+    if(pageSize<0){
+        pageSize=7;
+    }
+    pool.getConnection(function(err,conn){
+        res.header("Content-Type","application/json");
+        if(err){
+            res.send('{"err":"0"}');
+        }else{ //1-7  0-7 , 2-7 7-7  3-7 14-7  (pageNo-1)*pageSize
+            conn.query("select g.*,tname from goodsInfo g,goodstype t where g.tid=t.tid limit "+(pageNo-1)*pageSize+","+pageSize,function(err,result){
+                if(err){
+                    res.send('{"err":"0"}');
+                } else{
+                    var obj={objs:result};
+                    conn.query("select count(gid) as total from goodsInfo",function(err,result){
+                        conn.release();
+                        var total=0;
+                        if(err){
+                            total=0;
+                        } else{
+                            total=result[0].total;
+                        }
+                        obj.total=total;//{objs:[],total:9}
+                        res.send(obj);
+                    });
                 }
             });
         }

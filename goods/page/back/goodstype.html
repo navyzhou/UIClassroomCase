@@ -21,6 +21,7 @@
             if(data=="0"){
                 alert("商品类型添加失败...");
             }else{
+                $("#tname").val("");
                 var str="<tr><td>"+data+"</td><td>"+tname+"</td><td><a href='javascript:void(0)' onclick='delGoodsType(this,"+data+")'>[删除]</a></td></tr>";
                 $("#goodsTypeInfo").append( $(str) );
             }

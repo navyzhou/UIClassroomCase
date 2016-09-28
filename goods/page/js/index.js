@@ -4,7 +4,62 @@ $(function(){
    });
 
     userIsLogin(); //发送请求判断用户是否已经登录
+    getGoodsInfoByPageOne(1,7);
 });
+
+function getGoodsInfoByPageOne(pageNo,pageSize){
+    $.post("/getGoodsInfoByPageOne",{pageNo:pageNo,pageSize:pageSize},function(data){
+        $.each(data.objs,function(index,item){
+            var pic=item.pic;
+            if(pic.indexOf(",")>0){
+                pic=pic.split(",")[0];
+            }else if(pic==""){
+                pic="images/zanwu.jpg";
+            }
+
+            var str='<li><dl><dt><img src="'+pic+'"/></dt><dd class="goods_price">商品价格：&yen;'+item.price
+                +' </dd><dd>商品名称：考点开放</dd>' + '<dd>商品类型：'+item.tname+'</dd></dl></li>';
+            $("#goodsInfo").append($(str));
+        });
+
+        var total=parseInt(data.total); //获取总记录数
+        var totalPage=Math.ceil(total/pageSize);
+        for(var i=1;i<=totalPage;i++){
+            if(i==1){
+                $("#pageInfo").append($('<li><a href="javascript:showGoodsInfoByPage('+i+','+pageSize+')" class="checked">'+i+'</a></li>'));
+            }else {
+                $("#pageInfo").append($('<li><a href="javascript:showGoodsInfoByPage(' + i + ',' + pageSize + ')" class="unchecked">' + i + '</a></li>'));
+            }
+        }
+    },"json");
+}
+
+/*
+分页查询商品信息
+pageNo:查第几页
+pageSize:每页有多少条
+ */
+function showGoodsInfoByPage(pageNo,pageSize){
+    $.post("/getGoodsInfoByPage",{pageNo:pageNo,pageSize:pageSize},function(data){
+        $("#goodsInfo").html("");
+        $.each(data,function(index,item){
+            var pic=item.pic;
+            if(pic.indexOf(",")>0){
+                pic=pic.split(",")[0];
+            }else if(pic==""){
+                pic="images/zanwu.jpg";
+            }
+
+            var str='<li><dl><dt><img src="'+pic+'"/></dt><dd class="goods_price">商品价格：&yen;'+item.price
+                +' </dd><dd>商品名称：考点开放</dd>' + '<dd>商品类型：'+item.tname+'</dd></dl></li>';
+            $("#goodsInfo").append($(str));
+        });
+
+        $("#pageInfo li a").attr("class","unchecked");
+        $("#pageInfo li a").eq(pageNo-1).attr("class","checked");
+
+    },"json");
+}
 
 //打开登录窗口
 function showLogin(){
@@ -124,3 +179,19 @@ function userIsLogin(){ //判断用户是否已经登录
     })
 }
 
+//在线客服事件
+function showcustomerservice(){
+    if($('#showli').css('display')=='none'){
+        $('#showli').css('display','block');
+    }else{
+        return;
+    }
+}
+
+function hidecustomerservice(){
+    if($('#showli').css('display')=='block'){
+        $('#showli').css('display','none');
+    }else{
+        return;
+    }
+}
