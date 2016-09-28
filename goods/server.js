@@ -26,6 +26,23 @@ var fileUploadPathData="/pic"; //存入数据库中路径，主要要除掉stati
 //配置文件上传的中间件
 var upload =multer({dest:"."+fileUploadPath}); //上传图片的目录设定
 
+//日志配置
+log4js.configure({
+    appenders:[
+        {type:'console'}, //控制台输出
+        {
+            type:'file', //文件输出
+            filename:'./logs/goods.log', //文件路径
+            maxLogSize:102400, //超过maxLogSize大小时，会自动生成一个新的文件
+            category:"normal" //日志级别
+        }
+    ]
+});
+var logger=log4js.getLogger('normal');
+logger.setLevel('info');  //trace  debug info  warn  error  fatal
+app.use(log4js.connectLogger(logger,{level:'auto',format:':method :url'}));
+
+
 //配置数据库连接池
 var pool =mysql.createPool({
     host:"127.0.0.1",
@@ -55,11 +72,13 @@ app.post("/userRegister",function(req,res){//处理用户注册的方法
     }else{//访问数据库
         pool.getConnection(function(err,connection){
            if(err){
+               logger.error(err.message.toString());
                res.send("4"); //说明数据库连接失败
            } else {
                connection.query("insert into adminInfo values(0,?,?)",[req.body.uname,req.body.pwd],function(err,result){
                    connection.release(); //释放连接给连接池
                    if(err){
+                       logger.error(err.message.toString());
                        res.send("5"); //说明添加数据失败
                    }else{
                        res.send("6"); //注册成功
@@ -78,11 +97,13 @@ app.post("/userLogin",function(req,res){ //处理用户登录的请求
     }else{
         pool.getConnection(function(err,conn){
             if(err){
+                logger.error(err.message.toString());
                 res.send("3");
             } else{
                 conn.query("select aid,aname,pwd from adminInfo where aname=? and pwd=?",[req.body.uname,req.body.pwd],function(err,result){
                     conn.release(); //释放连接给连接池
                     if(err){
+                        logger.error(err.message.toString());
                         res.send("4");
                     } else{
                         if(result.length>0){ //说明用户登录成功，则需要将当前用户信息存到session中
@@ -105,13 +126,14 @@ app.get("/checkUserName",function(req,res){ //检验用户名是否可用
     }else(
          pool.getConnection(function(err,conn){
             if(err){
+                logger.error(err.message.toString());
                 res.send("1");
             }else{
                 //参数占位符用一个？ 非参数占位符用两个 ??
                 conn.query("select * from ?? where ??=?",[req.query.tabName,req.query.colName,req.query.uname],function(err,result){
                     conn.release(); //释放连接给连接池
                     if(err){
-                        logger.info(err.message.toString());
+                        logger.error(err.message.toString());
                         res.send("1");
                     }else{
                         if(result.length>0) { //说明找到了数据
@@ -138,11 +160,13 @@ app.get("/getAllTypes",function(req,res){ //处理获取所有商品类型的请
     pool.getConnection(function(err,conn){
         res.header("Content-Type","application/json");
         if(err){
+            logger.error(err.message.toString());
             res.send('{"err":"0"}');
         }else{
             conn.query("select tid,tname,status from goodstype where status=1",function(err,result){
                 conn.release();
                 if(err){
+                    logger.error(err.message.toString());
                     res.send('{"err":"0"}');
                 } else{
                     res.send(result);
@@ -158,11 +182,13 @@ app.post("/addGoodsType",function(req,res){ //添加商品类型
    } else{
        pool.getConnection(function(err,conn){
           if(err){
+              logger.error(err.message.toString());
               res.send("0");
           } else{
               conn.query("insert into goodsType values(0,?,1)",[req.body.tname],function(err,result){
                   conn.release();
                   if(err){
+                      logger.error(err.message.toString());
                       res.send("0");
                   }else{
                       res.send(result.insertId+"");
@@ -179,11 +205,13 @@ app.post("/delGoodsType",function(req,res){ //删除商品类型信息
     } else{
         pool.getConnection(function(err,conn){
             if(err){
+                logger.error(err.message.toString());
                 res.send("2");
             } else{
                 conn.query("update goodsType set status=0 where tid=?",[req.body.tid],function(err,result){
                     conn.release();
                     if(err){
+                        logger.error(err.message.toString());
                         res.send("3");
                     }else{
                         res.send("1");
@@ -200,6 +228,7 @@ app.post("/addGoods",upload.array("pic"),function(req,res){//处理获取所有�
     } else{
         pool.getConnection(function(err,conn){
             if(err){
+                logger.error(err.message.toString());
                 res.send("2");
             } else{
                 var fileName="";
@@ -219,7 +248,7 @@ app.post("/addGoods",upload.array("pic"),function(req,res){//处理获取所有�
                 conn.query("insert into goodsInfo values(0,?,?,?,?)",[req.body.pname,req.body.price,filePath,req.body.tid],function(err,result){
                     conn.release();
                     if(err){
-                        console.info(err);
+                        logger.error(err.message.toString());
                         res.send("3");
                     }else{
                         res.send("1");
@@ -234,12 +263,14 @@ app.get("/getAllGoodsInfo",function(req,res){ //获取所有商品信息
     pool.getConnection(function(err,conn){
         res.header("Content-Type","application/json");
         if(err){
+            logger.error(err.message.toString());
             res.send('{"err":"0"}');
         }else{
 
             conn.query("select g.*,tname from goodsInfo g,goodstype t where g.tid=t.tid",function(err,result){
                 conn.release();
                 if(err){
+                    logger.error(err.message.toString());
                     res.send('{"err":"0"}');
                 } else{
                     res.send(result);
@@ -261,10 +292,12 @@ app.post("/getGoodsInfoByPage",function(req,res){ //处理前台的分页查询�
     pool.getConnection(function(err,conn){
         res.header("Content-Type","application/json");
         if(err){
+            logger.error(err.message.toString());
             res.send('{"err":"0"}');
         }else{ //1-7  0-7 , 2-7 7-7  3-7 14-7  (pageNo-1)*pageSize
             conn.query("select g.*,tname from goodsInfo g,goodstype t where g.tid=t.tid limit "+(pageNo-1)*pageSize+","+pageSize,function(err,result){
                 if(err){
+                    logger.error(err.message.toString());
                     res.send('{"err":"0"}');
                 } else{
                     res.send(result);
@@ -286,10 +319,12 @@ app.post("/getGoodsInfoByPageOne",function(req,res){ //处理前台的第一次�
     pool.getConnection(function(err,conn){
         res.header("Content-Type","application/json");
         if(err){
+            logger.error(err.message.toString());
             res.send('{"err":"0"}');
         }else{ //1-7  0-7 , 2-7 7-7  3-7 14-7  (pageNo-1)*pageSize
             conn.query("select g.*,tname from goodsInfo g,goodstype t where g.tid=t.tid limit "+(pageNo-1)*pageSize+","+pageSize,function(err,result){
                 if(err){
+                    logger.error(err.message.toString());
                     res.send('{"err":"0"}');
                 } else{
                     var obj={objs:result};
@@ -297,6 +332,7 @@ app.post("/getGoodsInfoByPageOne",function(req,res){ //处理前台的第一次�
                         conn.release();
                         var total=0;
                         if(err){
+                            logger.error(err.message.toString());
                             total=0;
                         } else{
                             total=result[0].total;
@@ -315,6 +351,7 @@ app.use(express.static("page")); //默认到page文件夹下查找静态资源
 
 app.listen(80,function(err){
     if(err){
+        logger.error(err.message.toString());
         console.info(err);
     }else{
         console.info("应用程序启动成功...");
