@@ -46,3 +46,62 @@ article>ul>li>dl>dt>img{
     width:100px;
     height:120px;
 }
+
+article>div{
+    clear:both;
+    text-align: center;
+}
+
+#pageInfo li,#pageInfo li a{
+    display: inline-block;
+    width:24px;
+    height:24px;
+    line-height:24px;
+    padding:0px;
+    font-size:14px;
+}
+
+#pageInfo li{
+    margin-left:10px;
+}
+
+#pageInfo .checked{
+    background: #CC6666;
+    color:#fff;
+}
+
+#pageInfo .unchecked{
+    background: #ccc;
+}
+
+#pageInfo li a:hover{
+    background: #999;
+}
+
+
+/*在线客服样式区*/
+.customerservice{
+    position: fixed;
+    right:0px;
+    top:50%;
+    background:#FFFFFF;
+    padding:15px 10px;
+}
+
+.customertitle{
+    display:inline-block;
+    width:12px;
+    line-height: 24px;
+    word-wrap: break-word;
+    float: left;
+}
+
+#showli{
+    float: left;
+    margin:0px 10px;
+    display:none;
+}
+
+#showli li{
+    line-height:24px;
+}

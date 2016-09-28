@@ -156,6 +156,19 @@ app.get("/userIsLogin",function(req,res){ //处理用户是否已经登录的请
    }
 });
 
+app.get("/userOutLogin",function(req,res){ //处理用户注销的请求
+    req.session.currentLoginUser==undefined;
+    req.session.destroy(function(err) {
+        if(err){
+            logger.error(err.message.toString());
+            res.send("0");
+        }else{
+            res.send("1");
+        }
+    });
+
+});
+
 app.get("/getAllTypes",function(req,res){ //处理获取所有商品类型的请求
     pool.getConnection(function(err,conn){
         res.header("Content-Type","application/json");

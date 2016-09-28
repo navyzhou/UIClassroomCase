@@ -139,7 +139,7 @@ function userlogin(){
             case "5":alert("用户名或密码错误...");break;
             case "6":
                 hidenloginpage();
-                var str='尊敬的会员：<a href="">['+uname+']</a>&nbsp;&nbsp<a href="javascript:userOutLogin()">[注销]</a>&nbsp;<a href="back/goods.html">[后台管理]</a>';
+                var str='尊敬的会员：<a href="">['+uname+']</a>&nbsp;&nbsp<a href="javascript:userOutLogin()">[注销]</a>&nbsp;<a href="back/goods.html" target="_blank">[后台管理]</a>';
                 $("header").html(str);break;
             default:alert("登录失败....");break;
         }
@@ -171,12 +171,21 @@ function userIsLogin(){ //判断用户是否已经登录
         data= $.trim(data);
         var str;
         if(data!="0"){
-            str='尊敬的会员：<a href="">['+data+']</a>&nbsp;&nbsp<a href="javascript:userOutLogin()">[注销]</a>&nbsp;<a href="back/goods.html">[后台管理]</a>';
+            str='尊敬的会员：<a href="">['+data+']</a>&nbsp;&nbsp<a href="javascript:userOutLogin()">[注销]</a>&nbsp;<a href="back/goods.html" target="_blank">[后台管理]</a>';
         }else{
             str='<a href="javascript:showLogin()">[请先登录]</a>&nbsp;<a href="javascript:showRegister()">[立即注册]</a>';
         }
         $("header").html(str);
     })
+}
+
+function userOutLogin(){ //用户注销
+    $.get("/userOutLogin",null,function(data){
+        if(data=="1"){
+            var str='<a href="javascript:showLogin()">[请先登录]</a>&nbsp;<a href="javascript:showRegister()">[立即注册]</a>';
+            $("header").html(str);
+        }
+    });
 }
 
 //在线客服事件
