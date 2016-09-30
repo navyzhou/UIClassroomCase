@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>用户注册</title>
+    <style>
+        body,*{
+            margin:0px auto;
+            padding:0px;
+            font-family:"微软雅黑";
+        }
+        fieldset{
+            width:50%;
+        }
+        label{
+            display:inline-block;
+            width:200px;
+            text-align:right;
+        }
+        ul{
+            list-style:none;
+        }
+        li{
+            line-height:30px;
+        }
+    </style>
+    <script src="jquery-1.12.4.js" type="text/javascript"></script>
+    <script src="email.js"></script>
+</head>
+<body>
+<fieldset>
+    <legend>学生注册</legend>
+    <form action="/adduser" method="post">
+        <ul>
+            <li> <label for="sname">学生姓名:</label>
+                <input type="text" name="sname" id="sname"/></li>
+            <li> <label for="pwd">密码:</label>
+                <input type="password" name="pwd" id="pwd"/></li>
+            <li><label>性别</label>
+                <input type="radio" name="sex" value="男"/>男
+                <input type="radio" name="sex" value="女" checked/>女</li>
+
+            <li> <label for="age">年龄:</label>
+                <input type="number" name="age" id="age"/></li>
+            <li><label for="eml">邮箱：</label>
+            <input type="text" name="eml" id="eml" size="40" onblur="check(this)"/><input type="button" id="getemails" value="获取验证码" onclick="getemail()"/>
+            </li>
+            <li><label for="elma">验证码：</label>
+                <input type="text" name="tel" id="elma"/>
+            </li>
+
+            <li><input type="button" id="btn" value="注册" onclick="checkInfo()"/></li>
+        </ul>
+    </form>
+</fieldset>
+
+<script>
+
+
+</script>
+</body>
+</html>
