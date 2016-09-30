@@ -127,7 +127,7 @@ function userlogin(){
         $("#pwd").css("border-color","red")
         return;
     }
-    //发请求到服务器检验用户信息是否合法
+    //发请求到服务器检验用户信息是否合法 //http://127.0.0.1/userLogin
     $.post("userLogin",{uname:uname,pwd:pwd},function(data){
         //获取服务器的响应信息并提示给用户
         data= $.trim(data);

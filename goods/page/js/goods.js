@@ -22,6 +22,8 @@ function addGoods(){ //添加商品信息
     var pname= $.trim( $("#pname").val() );
     var price= $.trim( $("#price").val() );
 
+    console.info( UE.getEditor('editor').getContent() );
+
     //发异步请求到服务器
     $.ajaxFileUpload({
         url:'/addGoods',
